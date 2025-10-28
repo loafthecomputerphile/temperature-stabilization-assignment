@@ -65,7 +65,7 @@ int main (int argc, char *argv[])
         return -1;
     }
 
-    float initialTemp = centralTempCalc(initialTemp, the_message.T);
+    float initialTemp = externalTempCalc(initialTemp, the_message.T);
     while (response > 0){
         the_message = prepare_message(externalIndex, initialTemp); 
         if(send(socket_desc, (const void *)&the_message, sizeof(the_message), 0) < 0){
@@ -83,7 +83,7 @@ int main (int argc, char *argv[])
             return -1;
         }
 
-        initialTemp = centralTempCalc(initialTemp, the_message.T);
+        initialTemp = externalTempCalc(initialTemp, the_message.T);
     }
     
     close(socket_desc);

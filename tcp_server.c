@@ -12,7 +12,7 @@
 
 #define numExternals 4     // Number of external processes 
 
-float centralTempCalc(float centralTemp, tempSum){
+float centralTempCalc(float centralTemp, float tempSum){
     return (2*centralTemp + tempSum)/6;
 }
 
@@ -21,7 +21,7 @@ int toler_equal(float a, float b, float tolerance) {
 }
 
 // Function to check if four temperatures are similar
-int similiar_nums(float[] nums, float tolerance) {
+int similiar_nums(float nums[], float tolerance) {
     if (toler_equal(nums[0], nums[1], tolerance) &&
         toler_equal(nums[0], nums[2], tolerance) &&
         toler_equal(nums[0], nums[3], tolerance)) {
@@ -123,7 +123,7 @@ int main(void)
     int * client_socket = establishConnectionsFromExternalProcesses(); 
 
 
-    float eps = 0.001
+    float eps = 0.001;
     int stable = false;
     while ( !stable ){
 
@@ -146,7 +146,7 @@ int main(void)
 
         // Modify Temperature 
         float tempSum = temperature[0] + temperature[1] + temperature[2] + temperature[3];
-        updatedTemp = centralTempCalc(0, tempSum);
+        float updatedTemp = centralTempCalc(0, tempSum);
 
         struct msg updated_msg;
         if (similiar_nums(temperature, eps) == 1){
