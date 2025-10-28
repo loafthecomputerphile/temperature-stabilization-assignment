@@ -148,11 +148,15 @@ int main(void)
         float tempSum = temperature[0] + temperature[1] + temperature[2] + temperature[3];
         updatedTemp = centralTempCalc(0, tempSum);
 
-
-        // Construct message with updated temperature
-        struct msg updated_msg; 
-        updated_msg.T = updatedTemp;
-        updated_msg.Index = 0;                // Index of central server 
+        struct msg updated_msg;
+        if (similiar_nums(temperature, eps) == 1){
+            stable = true; 
+            updated_msg.T = updatedTemp;
+            updated_msg.Index = -1;  
+        } else {
+            updated_msg.T = updatedTemp;
+            updated_msg.Index = 0;
+        }
 
 
         // Send updated temperatures to the 4 external processes 
@@ -166,8 +170,7 @@ int main(void)
         printf("\n");
 
         // Check stability condition 
-        if (similiar_nums(temperature, eps) == 1)
-            stable = true; 
+        
 
     }
  
