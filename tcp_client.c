@@ -8,8 +8,8 @@
 #include "utils.h"
 
 
-int externalTempCalc(int externalTemp, int centralTemp){
-    return (int) (3*externalTemp + 2*centralTemp)/5;
+float externalTempCalc(float externalTemp, float centralTemp){
+    return (3*externalTemp + 2*centralTemp)/5;
 }
 
 int main (int argc, char *argv[])
@@ -65,8 +65,9 @@ int main (int argc, char *argv[])
         return -1;
     }
 
-    initialTemp = centralTempCalc(initialTemp, the_message.T);
+    float initialTemp = centralTempCalc(initialTemp, the_message.T);
     while (response > 0){
+        the_message = prepare_message(externalIndex, initialTemp); 
         if(send(socket_desc, (const void *)&the_message, sizeof(the_message), 0) < 0){
             printf("Unable to send message\n");
             return -1;
@@ -76,7 +77,8 @@ int main (int argc, char *argv[])
         if( response < 0){
             printf("Error while receiving server's msg\n");
             return -1;
-        } else if (response == 0){
+        } 
+        if (the_message.Index == -1){
             printf("Temperature of client %d has stablized", externalIndex);
             return -1;
         }
