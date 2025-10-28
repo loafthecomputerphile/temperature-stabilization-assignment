@@ -9,7 +9,7 @@
 
 
 int externalTempCalc(int externalTemp, int centralTemp){
-    return (int) (3*externalTemp + 2*centralTemp)/5
+    return (int) (3*externalTemp + 2*centralTemp)/5;
 }
 
 int main (int argc, char *argv[])
