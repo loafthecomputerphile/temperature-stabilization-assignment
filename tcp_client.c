@@ -8,6 +8,10 @@
 #include "utils.h"
 
 
+int externalTempCalc(int externalTemp, int centralTemp){
+    return (int) (3*externalTemp + 2*centralTemp)/5
+}
+
 int main (int argc, char *argv[])
 {
     int socket_desc;
@@ -53,18 +57,33 @@ int main (int argc, char *argv[])
         printf("Unable to send message\n");
         return -1;
     }
- 
 
     // Receive the server's response:
-    if(recv(socket_desc, (void *)&the_message, sizeof(the_message), 0) < 0){
+    int response = recv(socket_desc, (void *)&the_message, sizeof(the_message), 0);
+    if( response < 0){
         printf("Error while receiving server's msg\n");
         return -1;
     }
+
+    initialTemp = centralTempCalc(initialTemp, the_message.T);
+    while (response > 0){
+        if(send(socket_desc, (const void *)&the_message, sizeof(the_message), 0) < 0){
+            printf("Unable to send message\n");
+            return -1;
+        }
+
+        response = recv(socket_desc, (void *)&the_message, sizeof(the_message), 0);
+        if( response < 0){
+            printf("Error while receiving server's msg\n");
+            return -1;
+        } else if (response == 0){
+            printf("Temperature of client %d has stablized", externalIndex);
+            return -1;
+        }
+
+        initialTemp = centralTempCalc(initialTemp, the_message.T);
+    }
     
-    printf("--------------------------------------------------------\n");
-    printf("Updated temperature sent by the Central process = %f\n", the_message.T);
-    
-    // Close the socket:
     close(socket_desc);
     
     return 0;
