@@ -6,10 +6,29 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <stdbool.h>
+#include <math.h>
 #include "utils.h"
 
 
 #define numExternals 4     // Number of external processes 
+
+float centralTempCalc(float centralTemp, tempSum){
+    return (2*centralTemp + tempSum)/6;
+}
+
+int toler_equal(float a, float b, float tolerance) {
+    return fabs(a - b) <= tolerance;
+}
+
+// Function to check if four temperatures are similar
+int similiar_nums(float[] nums, float tolerance) {
+    if (toler_equal(nums[0], nums[1], tolerance) &&
+        toler_equal(nums[0], nums[2], tolerance) &&
+        toler_equal(nums[0], nums[3], tolerance)) {
+        return 1;
+    }
+    return 0; 
+}
 
 
 int * establishConnectionsFromExternalProcesses()
@@ -104,7 +123,7 @@ int main(void)
     int * client_socket = establishConnectionsFromExternalProcesses(); 
 
 
-
+    float eps = 0.001
     int stable = false;
     while ( !stable ){
 
@@ -126,8 +145,8 @@ int main(void)
         }
 
         // Modify Temperature 
-        float updatedTemp = temperature[0] + temperature[1] + temperature[2] + temperature[3];
-        updatedTemp += updatedTemp / 4.0;  
+        float tempSum = temperature[0] + temperature[1] + temperature[2] + temperature[3];
+        updatedTemp = centralTempCalc(0, tempSum);
 
 
         // Construct message with updated temperature
@@ -147,7 +166,7 @@ int main(void)
         printf("\n");
 
         // Check stability condition 
-        if (updatedTemp == 0)
+        if (similiar_nums(temperature, eps) == 1)
             stable = true; 
 
     }
